@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:alpine
 LABEL maintainer="Elliot Saba <staticfloat@gmail.com>, Valder Gallo <valergallo@gmail.com>, Bruno Zell <bruno.zzell@gmail.com>"
 
 VOLUME /etc/letsencrypt
@@ -7,14 +7,19 @@ EXPOSE 443
 
 # Do this apt/pip stuff all in one RUN command to avoid creating large
 # intermediate layers on non-squashable docker installs
-RUN apt update && \
-    apt install -y python python-dev libffi6 libffi-dev libssl-dev curl build-essential && \
-    curl -L 'https://bootstrap.pypa.io/get-pip.py' | python && \
-    pip install -U cffi certbot && \
-    apt remove --purge -y python-dev build-essential libffi-dev libssl-dev curl && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk update && \
+    apk add --no-cache \
+        python3 \
+        libffi && \
+    apk add --no-cache --virtual .build-deps \
+        python3-dev \
+        libffi-dev \
+        openssl-dev \
+        g++ \
+        curl && \
+    pip3 install --upgrade pip && \
+    pip3 install -U cffi certbot && \
+    apk del .build-deps
 
 # Copy in scripts for certbot
 COPY ./scripts/ /scripts
@@ -29,4 +34,4 @@ RUN rm -f /etc/nginx/conf.d/*
 COPY nginx_conf.d/ /etc/nginx/conf.d/
 
 ENTRYPOINT []
-CMD ["/bin/bash", "/scripts/entrypoint.sh"]
+CMD ["/bin/sh", "/scripts/entrypoint.sh"]
