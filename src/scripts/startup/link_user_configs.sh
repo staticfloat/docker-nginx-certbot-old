@@ -10,6 +10,6 @@ if [ ! -d "$SOURCE_DIR" ]; then
 else
     for conf in ${SOURCE_DIR}/*.conf; do
         echo "symlinking ${conf} to ${TARGET_DIR}"
-        ln -s ${SOURCE_DIR}$/{conf} ${TARGET_DIR}
+        ln -s ${SOURCE_DIR}/${conf} ${TARGET_DIR}
     done
 fi
