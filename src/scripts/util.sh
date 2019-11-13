@@ -60,8 +60,12 @@ auto_enable_configs() {
 # EMAIL environment variable, to register the proper support email address.
 get_certificate() {
     echo "Getting certificate for domain $1 on behalf of user $2"
-    PRODUCTION_URL='https://acme-v01.api.letsencrypt.org/directory'
-    STAGING_URL='https://acme-staging.api.letsencrypt.org/directory'
+    # ACME v1
+    # PRODUCTION_URL='https://acme-v01.api.letsencrypt.org/directory'
+    # STAGING_URL='https://acme-staging.api.letsencrypt.org/directory'
+    #  ACME v2
+    PRODUCTION_URL='https://acme-v02.api.letsencrypt.org/directory'
+    STAGING_URL='https://acme-staging-v02.api.letsencrypt.org/directory'
 
     if [ "${IS_STAGING}" = "1" ]; then
         letsencrypt_url=$STAGING_URL
@@ -83,7 +87,7 @@ is_renewal_required() {
     # If the file does not exist assume a renewal is required
     last_renewal_file="/etc/letsencrypt/live/$1/privkey.pem"
     [ ! -e "$last_renewal_file" ] && return;
-    
+
     # If the file exists, check if the last renewal was more than a week ago
     one_week_sec=604800
     now_sec=$(date -d now +%s)
