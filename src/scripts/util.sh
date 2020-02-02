@@ -103,7 +103,7 @@ template_user_configs() {
     TARGET_DIR="${2-/etc/nginx/conf.d}"
 
     # envsubst needs dollar signs in front of all variable names
-    DENV=$(echo ${ENVSUBST_VARS} | sed -E 's/\$*([^ ]+)/\$\1/g')
+    DENV=$(echo ${ENVSUBST_VARS} | sed -E 's/\$*([^ ]+)/\$$\1/g')
 
     echo "templating scripts from ${SOURCE_DIR} to ${TARGET_DIR}"
     echo "Substituting variables ${DENV}"
