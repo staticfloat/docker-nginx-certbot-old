@@ -28,5 +28,9 @@ RUN mkdir -p /scripts/startup
 RUN rm -f /etc/nginx/conf.d/*
 COPY nginx_conf.d/ /etc/nginx/conf.d/
 
+# forward request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+	&& ln -sf /dev/stderr /var/log/nginx/error.log
+
 ENTRYPOINT []
 CMD ["/bin/bash", "/scripts/entrypoint.sh"]
